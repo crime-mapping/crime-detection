@@ -10,13 +10,15 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 crime_model_path = os.path.join(current_dir, "crime_detector")
 crime_type_model_path = os.path.join(current_dir, "crime_type_classifier")
 
-# Load the first model (Crime Detection)
-crime_model = AutoModelForImageClassification.from_pretrained(crime_model_path, ignore_mismatched_sizes=True)
-crime_processor = AutoImageProcessor.from_pretrained(crime_model_path)
 
-# Load the second model (Crime Type Detection)
-crime_type_model = AutoModelForImageClassification.from_pretrained(crime_type_model_path, ignore_mismatched_sizes=True)
-crime_type_processor = AutoImageProcessor.from_pretrained(crime_type_model_path)
+crime_model = AutoModelForImageClassification.from_pretrained("NyanjaCyane/crime-detector",ignore_mismatched_sizes=True)
+crime_processor = AutoImageProcessor.from_pretrained("NyanjaCyane/crime-detector")
+
+#crime_model.classifier = torch.nn.Linear(in_features=768, out_features=2)
+
+crime_type_model = AutoModelForImageClassification.from_pretrained("NyanjaCyane/crimes-classifier",ignore_mismatched_sizes=True)
+crime_type_processor = AutoImageProcessor.from_pretrained("NyanjaCyane/crimes-classifier")
+#crime_type_model.classifier = torch.nn.Linear(in_features=768, out_features=3)
 
 # Open the video file or use the camera (replace 'video.mp4' with 0 for webcam)
 video_path = os.path.join(current_dir, "test_video.mp4")
