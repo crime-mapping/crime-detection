@@ -7,7 +7,7 @@ from transformers import AutoModelForImageClassification, AutoImageProcessor
 from PIL import Image
 from emailConfiguration import send_alert;
 from image_uploader import upload_image_to_cloudinary
-from crime_reporter import send_crime_to_api, get_emergency_level
+from crimedetector.crime_reporter import send_crime_to_api, get_emergency_level
 
 
 # Load models
@@ -73,7 +73,6 @@ def process_camera(camera):
         # If crime detected, classify the type
         if crime_score > 0.5 and predicted_label == "Crime":
             print(f"[{camera_name}] 🚨 Potential Crime Detected! Score: {round(crime_score, 3)}")
-            send_alert(camera_name, predicted_label, crime_score)
             inputs = crime_type_processor(images=pil_image, return_tensors="pt")
             with torch.no_grad():
                 outputs = crime_type_model(**inputs)
@@ -85,6 +84,7 @@ def process_camera(camera):
             top_label_index = top5_indices[0].item()
             top_label_score = top5_probs[0].item()
             top_label = crime_type_model.config.id2label.get(top_label_index, "Unknown")    
+            send_alert(camera_name, top_label, top_label_score)
             # Upload image to Cloudinary
             image_url = upload_image_to_cloudinary(pil_image)
 

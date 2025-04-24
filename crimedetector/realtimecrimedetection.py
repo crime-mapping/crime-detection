@@ -47,7 +47,6 @@ while cap.isOpened():
     # Display the crime detection result
     if crime_score > 0.5 and predicted_label == "Crime":
         print(f"Potential Crime Detected! Score: {round(crime_score, 3)}")
-        send_alert("Camera One", predicted_label, crime_score)
         # Preprocess the frame for the crime type detection model
         inputs = crime_type_processor(images=pil_image, return_tensors="pt")
         
@@ -56,13 +55,14 @@ while cap.isOpened():
             logits = outputs.logits
             probs = torch.softmax(logits, dim=1)
             top5_probs, top5_indices = torch.topk(probs[0], 5)
-        
+        label = crime_type_model.config.id2label.get(top5_indices[0].item(), "Unknown")
+        score = round(top5_probs[0].item(), 3)
+        send_alert("Camera One",label, score)
         print("Top 5 crime types:")
         for i in range(5):
             label = crime_type_model.config.id2label.get(top5_indices[i].item(), "Unknown")
             score = round(top5_probs[i].item(), 3)
             print(f"{label}: {score}")
-    
     # Display the frame with results (optional)
     cv2.imshow('Video Feed', frame)
 

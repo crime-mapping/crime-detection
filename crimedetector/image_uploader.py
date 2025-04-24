@@ -1,14 +1,19 @@
+import os
 import cloudinary
 import cloudinary.uploader
 from cloudinary.utils import cloudinary_url
 from io import BytesIO
 from PIL import Image
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 # Configuration       
-cloudinary.config( 
-    cloud_name = "dugocez66", 
-    api_key = "828918583556253", 
-    api_secret = "JT5wIOYL40WKOn49bdN34q-lAi8", 
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
     secure=True
 )
 
