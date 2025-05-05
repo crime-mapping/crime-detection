@@ -1,5 +1,11 @@
 # crime_reporter.py
+import os
 import requests
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
 
 def get_emergency_level(score: float) -> str:
     """Maps confidence score to emergency level."""
@@ -9,19 +15,35 @@ def get_emergency_level(score: float) -> str:
         return "MEDIUM"
     else:
         return "LOW"
+    
+CRIME_TYPE_MAP = {
+    "Stealing": "STEALING",
+    "Robbery": "ROBBERY",
+    "Arson": "ARSON",
+    "Shooting": "SHOOTING",
+    "Vandalism": "VANDALISM",
+    "Assault": "ASSAULT",
+    "Shoplifting": "SHOPLIFTING",
+    "Abuse": "ABUSE",
+    "Explosion": "EXPLOSION",
+    "Arrest": "ARREST",
+    "Fighting": "FIGHTING",
+    "RoadAccidents": "ROAD_ACCIDENTS", 
+    "Burglary": "BURGLARY",
+}   
 
 def send_crime_to_api(camera_name: str, crime_type: str, emergency_level: str, image_url: str, location_id: str,location_name):
     """Sends crime data to the backend API."""
     payload = {
         "crimeDescription": f"Detected {crime_type} from {camera_name} in {location_name}",
-        "crimeType": crime_type,
-        "crimeLocation": location_id,  # Replace with real location ID
+        "crimeType": crime_type.upper(),
+        "crimeLocation": location_id,  
         "emergencyLevel": emergency_level,
         "supportingImage": image_url,
     }
 
     headers = {
-        "Authorization": "Bearer YOUR_JWT_TOKEN",  # Replace with actual token
+        "model-api-key": os.getenv("MODEL_API_KEY"), 
         "Content-Type": "application/json",
     }
 
